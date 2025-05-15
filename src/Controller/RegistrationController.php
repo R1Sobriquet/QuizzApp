@@ -21,22 +21,19 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // hash the plain password
+            // Hachage du mot de passe
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
             );
-            
-            $user->setDateCreation(new \DateTime());
-            $user->setRoles(['ROLE_USER']);
 
             $entityManager->persist($user);
             $entityManager->flush();
-
-            $this->addFlash('success', 'Votre compte a été créé avec succès !');
-
+            
+            $this->addFlash('success', 'Votre compte a été créé avec succès!');
+            
             return $this->redirectToRoute('app_login');
         }
 

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes scores{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <h1 class="mb-4">Mes scores</h1>
+    
+    {% if scores is empty %}
+        <div class="alert alert-info">
+            Vous n'avez pas encore passé de quiz.
+        </div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Quiz</th>
+                        <th>Score</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for score in scores %}
+                        <tr>
+                            <td>{{ score.quiz.titre }}</td>
+                            <td>{{ score.note|number_format(1) }}%</td>
+                            <td>{{ score.datePassage|date('d/m/Y H:i') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{{ path('app_quiz_list') }}" class="btn btn-primary">Voir tous les quiz</a>
+    </div>
+</div>
+{% endblock %}

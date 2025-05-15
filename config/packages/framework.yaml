@@ -6,6 +6,10 @@ framework:
     php_errors:
         log: true       # Log les erreurs PHP
         throw: false    # Ne pas transformer les notices/warnings PHP en exceptions
+    property_info:
+        enabled: false
+
+
 
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.

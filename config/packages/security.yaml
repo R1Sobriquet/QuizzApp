@@ -14,13 +14,10 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            entry_point: App\Security\LoginFormAuthenticator
             lazy: true
             provider: app_user_provider
             custom_authenticator: App\Security\LoginFormAuthenticator
-            form_login:
-                login_path: app_login
-                check_path: app_login
-                success_handler: App\Security\LoginSuccessHandler
             logout:
                 path: app_logout
                 # where to redirect after logout

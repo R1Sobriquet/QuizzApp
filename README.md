@@ -1,5 +1,3 @@
-Voici un exemple de fichier README.md pour votre projet Symfony de quizz non terminé. Assurez-vous de personnaliser les sections selon les spécificités de votre projet.
-
 ```markdown
 # Application de Quizz Symfony
 

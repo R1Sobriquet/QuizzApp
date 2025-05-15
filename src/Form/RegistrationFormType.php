@@ -11,59 +11,48 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\IsTrue;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', EmailType::class, [
-                'attr' => ['class' => 'form-control'],
-                'label' => 'Email'
+            ->add('prenom', TextType::class, [
+                'label' => 'Prénom',
             ])
             ->add('nom', TextType::class, [
-                'attr' => ['class' => 'form-control'],
-                'label' => 'Nom'
+                'label' => 'Nom',
             ])
-            ->add('prenom', TextType::class, [
-                'attr' => ['class' => 'form-control'],
-                'label' => 'Prénom'
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
+            ])
+            ->add('plainPassword', PasswordType::class, [
+                'label' => 'Mot de passe',
+                'mapped' => false,
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length(min: 6),
+                ],
             ])
             ->add('role', ChoiceType::class, [
+                'label' => 'Je suis',
                 'choices' => [
-                    'Stagiaire' => 'stagiaire',
-                    'Formateur' => 'formateur'
+                    'Stagiaire' => 'ROLE_USER',
+                    'Formateur' => 'ROLE_FORMATEUR',
                 ],
                 'expanded' => true,
                 'multiple' => false,
-                'label' => 'Je suis'
-            ])
-            ->add('plainPassword', PasswordType::class, [
-                'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password', 'class' => 'form-control'],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez entrer un mot de passe',
-                    ]),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Votre mot de passe doit contenir au moins {{ limit }} caractères',
-                        'max' => 4096,
-                    ]),
-                ],
-                'label' => 'Mot de passe'
+                 'mapped' => true,
             ])
             ->add('agreeTerms', CheckboxType::class, [
+                'label' => "J'accepte les conditions d'utilisation",
                 'mapped' => false,
                 'constraints' => [
-                    new IsTrue([
-                        'message' => 'Vous devez accepter les conditions d\'utilisation.',
+                    new Assert\IsTrue([
+                        'message' => 'Vous devez accepter les conditions.',
                     ]),
                 ],
-                'label' => 'J\'accepte les conditions d\'utilisation'
             ]);
     }
 

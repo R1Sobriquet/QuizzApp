@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Quiz App{% endblock %}
+
+{% block body %}
+<div class="jumbotron py-5 mb-4 bg-light rounded-3">
+    <div class="container">
+        <h1 class="display-4">Bienvenue sur Quiz App</h1>
+        <p class="lead">Testez vos connaissances avec nos quiz interactifs !</p>
+        {% if not app.user %}
+            <div class="mt-4">
+                <a href="{{ path('app_register') }}" class="btn btn-primary me-2">S'inscrire</a>
+                <a href="{{ path('app_login') }}" class="btn btn-outline-primary">Se connecter</a>
+            </div>
+        {% else %}
+            <div class="mt-4">
+                <a href="{{ path('app_quiz_list') }}" class="btn btn-primary">Voir tous les quiz</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <h2 class="mb-4">Quiz récents</h2>
+        <div class="row">
+            {% for quiz in quizzes %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 quiz-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ quiz.titre }}</h5>
+                            <p class="card-text small">{{ quiz.description|u.truncate(100, '...') }}</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <small class="text-muted">{{ quiz.dateCreation|date('d/m/Y') }}</small>
+                                <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}" class="btn btn-sm btn-primary">Voir le quiz</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">Aucun quiz disponible pour le moment.</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <h2 class="mb-4">Catégories</h2>
+        <div class="list-group">
+            {% for categorie in categories %}
+                <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}" 
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center category-card mb-2">
+                    {{ categorie.nom }}
+                    <span class="badge bg-primary rounded-pill">{{ categorie.questions|length }}</span>
+                </a>
+            {% else %}
+                <div class="alert alert-info">Aucune catégorie disponible.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

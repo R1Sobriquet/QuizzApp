@@ -3,7 +3,7 @@
 {% block title %}Résultat du Quiz - Quiz App{% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card result-card mb-4">
@@ -28,17 +28,17 @@
                         
                         {% if score.note >= 80 %}
                             <div class="alert alert-success">
-                                <h4><i class="fas fa-trophy me-2"></i>Excellent !</h4>
+                                <h4>Excellent !</h4>
                                 <p>Bravo, vous avez obtenu un excellent score !</p>
                             </div>
                         {% elseif score.note >= 50 %}
                             <div class="alert alert-warning">
-                                <h4><i class="fas fa-thumbs-up me-2"></i>Bien joué !</h4>
+                                <h4>Bien joué !</h4>
                                 <p>Vous avez obtenu un bon score, mais il y a encore de la place pour l'amélioration.</p>
                             </div>
                         {% else %}
                             <div class="alert alert-danger">
-                                <h4><i class="fas fa-book-open me-2"></i>Continuez à apprendre</h4>
+                                <h4>Continuez à apprendre</h4>
                                 <p>Ce quiz était difficile ! Réessayez après avoir révisé les sujets.</p>
                             </div>
                         {% endif %}
@@ -48,62 +48,6 @@
                         <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}" class="btn btn-secondary">Détails du quiz</a>
                         <a href="{{ path('app_quiz_play', {'id': quiz.id}) }}" class="btn btn-primary">Rejouer</a>
                     </div>
-                </div>
-            </div>
-            
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h3 class="mb-0">Vos autres scores</h3>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Quiz</th>
-                                    <th>Date</th>
-                                    <th>Score</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% set otherScores = [] %}
-                                {% for s in app.user.scores %}
-                                    {% if s.id != score.id %}
-                                        {% set otherScores = otherScores|merge([s]) %}
-                                    {% endif %}
-                                {% endfor %}
-                                
-                                {% for s in otherScores|slice(0, 5) %}
-                                    <tr>
-                                        <td>{{ s.quiz.titre }}</td>
-                                        <td>{{ s.datePassage|date('d/m/Y H:i') }}</td>
-                                        <td>
-                                            <div class="progress" style="height: 20px;">
-                                                <div class="progress-bar {% if s.note < 50 %}bg-danger{% elseif s.note < 80 %}bg-warning{% else %}bg-success{% endif %}" 
-                                                     role="progressbar" 
-                                                     style="width: {{ s.note }}%;" 
-                                                     aria-valuenow="{{ s.note }}" 
-                                                     aria-valuemin="0" 
-                                                     aria-valuemax="100">
-                                                    {{ s.note|number_format(2, '.', ',') }}%
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        <td colspan="3" class="text-center">Aucun autre score disponible.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    {% if otherScores|length > 5 %}
-                        <div class="text-center mt-3">
-                            <a href="{{ path('app_mes_scores') }}" class="btn btn-outline-primary">Voir tous mes scores</a>
-                        </div>
-                    {% endif %}
                 </div>
             </div>
         </div>

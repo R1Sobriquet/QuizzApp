@@ -21,28 +21,16 @@ class ChoixRepository extends ServiceEntityRepository
         parent::__construct($registry, Choix::class);
     }
 
-//    /**
-//     * @return Choix[] Returns an array of Choix objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Choix
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Trouve le choix correct pour une question
+     */
+    public function findCorrectChoix(int $questionId): ?Choix
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.question = :questionId')
+            ->andWhere('c.estCorrect = true')
+            ->setParameter('questionId', $questionId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

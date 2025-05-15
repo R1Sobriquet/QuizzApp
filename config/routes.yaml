@@ -1,3 +1,10 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
+formateur_dashboard:
+    path: /formateur
+    controller: App\Controller\FormateurController::index
+
+stagiaire_dashboard:
+    path: /stagiaire
+    controller: App\Controller\StagiaireController::index

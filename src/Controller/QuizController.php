@@ -23,13 +23,19 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route('/quiz/{id}', name: 'app_quiz_show', requirements: ['id' => '\d+'])]
-    public function show(Quiz $quiz): Response
-    {
-        return $this->render('quiz/show.html.twig', [
-            'quiz' => $quiz,
-        ]);
+#[Route('/quiz/{id}', name: 'app_quiz_show', requirements: ['id' => '\d+'])]
+public function show(int $id, QuizRepository $quizRepository): Response
+{
+    $quiz = $quizRepository->find($id);
+    
+    if (!$quiz) {
+        throw $this->createNotFoundException('Le quiz demandé n\'existe pas');
     }
+    
+    return $this->render('quiz/show.html.twig', [
+        'quiz' => $quiz,
+    ]);
+}
 
     #[Route('/quiz/{id}/play', name: 'app_quiz_play', requirements: ['id' => '\d+'])]
     public function play(Quiz $quiz): Response
@@ -95,16 +101,22 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route('/quiz/categories/{id}', name: 'app_categorie_show', requirements: ['id' => '\d+'])]
-    public function showByCategory(int $id, QuizRepository $quizRepository): Response
-    {
-        $quizzes = $quizRepository->findByCategory($id);
-
-        return $this->render('quiz/by_category.html.twig', [
-            'quizzes' => $quizzes,
-            'category_id' => $id,
-        ]);
+#[Route('/quiz/categories/{id}', name: 'app_categorie_show', requirements: ['id' => '\d+'])]
+public function showByCategory(int $id, CategorieRepository $categorieRepository, QuizRepository $quizRepository): Response
+{
+    $categorie = $categorieRepository->find($id);
+    
+    if (!$categorie) {
+        throw $this->createNotFoundException('Catégorie non trouvée');
     }
+    
+    $quizzes = $quizRepository->findByCategory($id);
+    
+    return $this->render('quiz/by_category.html.twig', [
+        'categorie' => $categorie,
+        'quizzes' => $quizzes,
+    ]);
+}
 
     #[Route('/user/scores', name: 'app_mes_scores')]
     public function userScores(ScoreRepository $scoreRepository): Response

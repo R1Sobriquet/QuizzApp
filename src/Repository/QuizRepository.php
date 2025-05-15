@@ -20,40 +20,33 @@ class QuizRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Quiz::class);
     }
+
+    /**
+     * Trouve les quiz qui contiennent des questions de la catégorie spécifiée
+     */
     public function findByCategory(int $categoryId): array
-{
-    return $this->createQueryBuilder('q')
-        ->join('q.quizQuestions', 'qq')
-        ->join('qq.question', 'question')
-        ->where('question.categorie = :categoryId')
-        ->setParameter('categoryId', $categoryId)
-        ->orderBy('q.dateCreation', 'DESC')
-        ->getQuery()
-        ->getResult();
-}
+    {
+        $qb = $this->createQueryBuilder('q')
+            ->join('q.quizQuestions', 'qq')
+            ->join('qq.question', 'quest')
+            ->join('quest.categorie', 'cat')
+            ->where('cat.id = :categoryId')
+            ->setParameter('categoryId', $categoryId)
+            ->orderBy('q.dateCreation', 'DESC')
+            ->distinct();
+            
+        return $qb->getQuery()->getResult();
+    }
 
-//    /**
-//     * @return Quiz[] Returns an array of Quiz objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('q')
-//            ->andWhere('q.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('q.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Quiz
-//    {
-//        return $this->createQueryBuilder('q')
-//            ->andWhere('q.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Trouve les quiz récents
+     */
+    public function findRecent(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('q')
+            ->orderBy('q.dateCreation', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

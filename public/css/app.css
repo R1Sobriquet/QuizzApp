@@ -1,0 +1,88 @@
+:root {
+    --pastel-blue: #a9c6ff;
+    --pastel-green: #b5e8b0;
+    --pastel-pink: #ffcfe2;
+    --pastel-yellow: #fff3b5;
+    --pastel-purple: #d6c6ff;
+    --pastel-teal: #b4e0e0;
+    --pastel-orange: #ffd8b5;
+    --pastel-background: #f8f9fa;
+}
+
+body {
+    background-color: var(--pastel-background);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    background-color: var(--pastel-teal);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #333;
+}
+
+.nav-link {
+    color: #444;
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+    color: #222;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+
+.category-card {
+    background-color: var(--pastel-yellow);
+}
+
+.quiz-card {
+    background-color: var(--pastel-blue);
+}
+
+.btn-primary {
+    background-color: var(--pastel-purple);
+    border-color: var(--pastel-purple);
+    color: #333;
+}
+
+.btn-primary:hover {
+    background-color: #b9a5ef;
+    border-color: #b9a5ef;
+    color: #222;
+}
+
+.btn-success {
+    background-color: var(--pastel-green);
+    border-color: var(--pastel-green);
+    color: #333;
+}
+
+.btn-success:hover {
+    background-color: #99d992;
+    border-color: #99d992;
+    color: #222;
+}
+
+/* Autres styles définis précédemment... */

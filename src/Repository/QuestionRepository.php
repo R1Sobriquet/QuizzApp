@@ -21,28 +21,29 @@ class QuestionRepository extends ServiceEntityRepository
         parent::__construct($registry, Question::class);
     }
 
-//    /**
-//     * @return Question[] Returns an array of Question objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('q')
-//            ->andWhere('q.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('q.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Trouve les questions par niveau de difficulté
+     */
+    public function findByDifficulte(int $niveau): array
+    {
+        return $this->createQueryBuilder('q')
+            ->where('q.niveauDifficulte = :niveau')
+            ->setParameter('niveau', $niveau)
+            ->orderBy('q.dateCreation', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Question
-//    {
-//        return $this->createQueryBuilder('q')
-//            ->andWhere('q.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Trouve les questions par catégorie
+     */
+    public function findByCategorie(int $categorieId): array
+    {
+        return $this->createQueryBuilder('q')
+            ->where('q.categorie = :categorieId')
+            ->setParameter('categorieId', $categorieId)
+            ->orderBy('q.dateCreation', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

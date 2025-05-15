@@ -1,19 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tous les Quiz - Quiz App{% endblock %}
+{% block title %}Quiz par catégorie - {{ categorie.nom }}{% endblock %}
 
 {% block body %}
 <div class="container py-4">
-    <h1 class="mb-4">Tous les Quiz</h1>
+    <h1 class="mb-4">Quiz - Catégorie: {{ categorie.nom }}</h1>
+    <p>{{ categorie.description }}</p>
     
-    <div class="row">
+    <div class="row mt-4">
         {% for quiz in quizzes %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100 quiz-card">
                     <div class="card-body">
                         <h5 class="card-title">{{ quiz.titre }}</h5>
-                        <p class="card-text">{{ quiz.description }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
+                        {% if quiz.description %}
+                            <p class="card-text small">
+                                {% if quiz.description|length > 100 %}
+                                    {{ quiz.description|slice(0, 100) ~ '...' }}
+                                {% else %}
+                                    {{ quiz.description }}
+                                {% endif %}
+                            </p>
+                        {% endif %}
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-3">
                             <small class="text-muted">{{ quiz.dateCreation|date('d/m/Y') }}</small>
                             <span class="badge bg-primary">{{ quiz.quizQuestions|length }} questions</span>
                         </div>
@@ -26,10 +36,14 @@
         {% else %}
             <div class="col-12">
                 <div class="alert alert-info">
-                    Aucun quiz disponible pour le moment.
+                    Aucun quiz disponible dans cette catégorie.
                 </div>
             </div>
         {% endfor %}
+    </div>
+    
+    <div class="mt-4">
+        <a href="{{ path('app_home') }}" class="btn btn-secondary">Retour à l'accueil</a>
     </div>
 </div>
 {% endblock %}

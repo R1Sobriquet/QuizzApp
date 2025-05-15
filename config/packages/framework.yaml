@@ -3,6 +3,9 @@ framework:
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
     http_method_override: false
+    php_errors:
+        log: true       # Log les erreurs PHP
+        throw: false    # Ne pas transformer les notices/warnings PHP en exceptions
 
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.
@@ -14,8 +17,6 @@ framework:
 
     #esi: true
     #fragments: true
-    php_errors:
-        log: true
 
 when@test:
     framework:

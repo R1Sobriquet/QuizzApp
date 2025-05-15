@@ -1,0 +1,43 @@
+:root {
+    --pastel-blue: #a9c6ff;
+    --pastel-green: #b5e8b0;
+    --pastel-pink: #ffcfe2;
+    --pastel-yellow: #fff3b5;
+    --pastel-purple: #d6c6ff;
+    --pastel-teal: #b4e0e0;
+    --pastel-orange: #ffd8b5;
+    --pastel-background: #f8f9fa;
+}
+
+/* Personnalisation de l'interface EasyAdmin */
+.sidebar {
+    background-color: var(--pastel-teal);
+}
+
+.sidebar-menu .menu-header {
+    background-color: var(--pastel-purple);
+    color: #333;
+}
+
+.sidebar-menu a.menu-item:hover {
+    background-color: var(--pastel-green);
+}
+
+.content-header {
+    background-color: var(--pastel-background);
+}
+
+.datagrid thead {
+    background-color: var(--pastel-yellow);
+}
+
+.button.btn-primary {
+    background-color: var(--pastel-blue);
+    border-color: var(--pastel-blue);
+    color: #333;
+}
+
+.button.btn-primary:hover {
+    background-color: #8ab0f0;
+    border-color: #8ab0f0;
+}

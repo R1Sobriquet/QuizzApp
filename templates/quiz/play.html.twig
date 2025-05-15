@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ quiz.titre }} - Quiz App{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .choice-item {
+            transition: all 0.2s;
+        }
+        .choice-item:hover {
+            transform: translateX(5px);
+        }
+        .timer-container {
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card quiz-card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ quiz.titre }}</h2>
+                    <div class="timer-container">
+                        <div class="timer" id="timer">10</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form id="quiz-form" method="post" action="{{ path('app_quiz_submit', {'id': quiz.id}) }}">
+                        <div id="questions-container">
+                            <!-- Les questions seront chargées ici dynamiquement -->
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" id="prev-btn" class="btn btn-secondary" disabled>Précédent</button>
+                            <div>
+                                <span id="question-counter">1 / {{ quiz.quizQuestions|length }}</span>
+                            </div>
+                            <button type="button" id="next-btn" class="btn btn-primary">Suivant</button>
+                        </div>
+                        
+                        <div class="d-grid mt-4">
+                            <button type="submit" id="submit-btn" class="btn btn-success" style="display: none;">Terminer le quiz</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const quizForm = document.getElementById('quiz-form');
+        const questionsContainer = document.getElementById('questions-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const questionCounter = document.getElementById('question-counter');
+        const timerDisplay = document.getElementById('timer');
+        
+        let currentQuestion = 1;
+        const totalQuestions = {{ quiz.quizQuestions|length }};
+        let answers = {};
+        let timer;
+        let secondsLeft = 10;
+        
+        function loadQuestion(questionNumber) {
+            fetch(`/api/quiz/{{ quiz.id }}/question/${questionNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error(data.error);
+                        return;
+                    }
+                    
+                    const question = data.question;
+                    
+                    // Créer le HTML pour la question
+                    let questionHtml = `
+                        <div class="question-box mb-4">
+                            <h3 class="mb-3">Question ${questionNumber}</h3>
+                            <p class="question-text mb-4">${question.texte}</p>
+                            <div class="choices-list">
+                    `;
+                    
+                    // Ajouter les choix
+                    question.choices.forEach(choice => {
+                        const isChecked = answers[question.id] == choice.id ? 'checked' : '';
+                        questionHtml += `
+                            <div class="choice-item mb-2 p-3 border rounded">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="answers[${question.id}]" 
+                                           id="choice-${choice.id}" value="${choice.id}" ${isChecked}
+                                           onchange="window.saveAnswer(${question.id}, ${choice.id})">
+                                    <label class="form-check-label w-100" for="choice-${choice.id}">
+                                        ${choice.texte}
+                                    </label>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    questionHtml += `
+                            </div>
+                        </div>
+                    `;
+                    
+                    questionsContainer.innerHTML = questionHtml;
+                    
+                    // Mettre à jour les boutons et le compteur
+                    prevBtn.disabled = questionNumber === 1;
+                    if (questionNumber === totalQuestions) {
+                        nextBtn.style.display = 'none';
+                        submitBtn.style.display = 'block';
+                    } else {
+                        nextBtn.style.display = 'block';
+                        submitBtn.style.display = 'none';
+                    }
+                    
+                    questionCounter.textContent = `${questionNumber} / ${totalQuestions}`;
+                    
+                    // Redémarrer le timer
+                    resetTimer();
+                })
+                .catch(error => console.error('Error loading question:', error));
+        }
+        
+        // Fonction pour sauvegarder la réponse
+        window.saveAnswer = function(questionId, choiceId) {
+            answers[questionId] = choiceId;
+        };
+        
+        // Gestionnaire pour le bouton Précédent
+        prevBtn.addEventListener('click', function() {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                loadQuestion(currentQuestion);
+            }
+        });
+        
+        // Gestionnaire pour le bouton Suivant
+        nextBtn.addEventListener('click', function() {
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                loadQuestion(currentQuestion);
+            }
+        });
+        
+        // Fonctions pour le timer
+        function startTimer() {
+            timer = setInterval(function() {
+                secondsLeft--;
+                timerDisplay.textContent = secondsLeft;
+                
+                if (secondsLeft <= 3) {
+                    timerDisplay.classList.add('danger');
+                } else if (secondsLeft <= 5) {
+                    timerDisplay.classList.add('warning');
+                }
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(timer);
+                    // Passer automatiquement à la question suivante ou soumettre si c'est la dernière
+                    if (currentQuestion < totalQuestions) {
+                        currentQuestion++;
+                        loadQuestion(currentQuestion);
+                    } else {
+                        quizForm.submit();
+                    }
+                }
+            }, 1000);
+        }
+        
+        function resetTimer() {
+            clearInterval(timer);
+            secondsLeft = 10;
+            timerDisplay.textContent = secondsLeft;
+            timerDisplay.classList.remove('warning', 'danger');
+            startTimer();
+        }
+        
+        // Charger la première question au chargement de la page
+        loadQuestion(currentQuestion);
+    });
+</script>
+{% endblock %}

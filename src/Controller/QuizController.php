@@ -77,7 +77,7 @@ public function play(int $id, QuizRepository $quizRepository): Response
         // Déboguer les données reçues
         // dump($request->request->all());
         
-        $answers = $request->request->get('answers', []);
+        $answers = $request->request->all('answers');
         $totalQuestions = count($quiz->getQuizQuestions());
         $correctAnswers = 0;
 
